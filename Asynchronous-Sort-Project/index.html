@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Asynchronous Javascript</title>
+</head>
+
+<body>
+
+
+  <script>
+    let my_obj = [];
+    fetch("https://restcountries.eu/rest/v2/all")
+      .then(function (resp) { return resp.json(); })
+      .then(function (data) {
+        for (var i = 0; i < data.length; i++) {
+          my_obj.push([data[i].name, data[i].capital, data[i].area, data[i].population, data[i].currencies[0].name, data[i].currencies[0].symbol])
+        }
+        createTable(my_obj);
+      }).then(function (my_obj) {
+        var test = document.querySelector('tr');
+        for (var i = 0; i < test.cells.length; i++) {
+          th_id = String(test.cells[i].id)
+          console.log(th_id)
+          th_id = document.getElementById(th_id).id
+          document.getElementById(th_id).addEventListener('click', function (e) {
+            sortTable(parseInt(e.toElement.cellIndex));
+          })
+        }
+      }
+      );
+
+    function createTable(tableData) {
+      var table = document.createElement('table');
+      table.setAttribute("id", "myTable2")
+      var header = document.createElement("tr");
+      // get first row to be header
+      var headers = ['Name', 'Capital', 'Area', 'Population', 'Currency Name', 'Currency Symbol'];
+
+      var i = 0;
+      // create table header
+      headers.forEach(function (rowHeader) {
+        var th = document.createElement("th");
+        th.id = 'id' + String(i)
+        th.appendChild(document.createTextNode(rowHeader));
+        header.appendChild(th);
+        i++;
+      }, false);
+
+      // insert table header
+      table.append(header);
+      var row = {};
+      var cell = {};
+
+      // remove first how - header
+      tableData.shift();
+      tableData.forEach(function (rowData, index) {
+        row = table.insertRow();
+        rowData.forEach(function (cellData) {
+          cell = row.insertCell();
+          cell.textContent = cellData;
+        });
+      });
+      document.body.appendChild(table);
+    }
+
+    function sortTable(n) {
+      var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+      table = document.getElementById("myTable2");
+      switching = true;
+      // Set the sorting direction to ascending:
+      dir = "asc";
+      /* Make a loop that will continue until
+      no switching has been done: */
+      while (switching) {
+        // Start by saying: no switching is done:
+        switching = false;
+        rows = table.rows;
+        /* Loop through all table rows (except the
+        first, which contains table headers): */
+        for (i = 1; i < (rows.length - 1); i++) {
+          // Start by saying there should be no switching:
+          shouldSwitch = false;
+          /* Get the two elements you want to compare,
+          one from current row and one from the next: */
+          x = rows[i].getElementsByTagName("TD")[n];
+          y = rows[i + 1].getElementsByTagName("TD")[n];
+          /* Check if the two rows should switch place,
+          based on the direction, asc or desc: */
+          if (dir == "asc") {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              // If so, mark as a switch and break the loop:
+              shouldSwitch = true;
+              break;
+            }
+          } else if (dir == "desc") {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+              // If so, mark as a switch and break the loop:
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+        if (shouldSwitch) {
+          /* If a switch has been marked, make the switch
+          and mark that a switch has been done: */
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          // Each time a switch is done, increase this count by 1:
+          switchcount++;
+        } else {
+          /* If no switching has been done AND the direction is "asc",
+          set the direction to "desc" and run the while loop again. */
+          if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -22,7 +22,6 @@
         var test = document.querySelector('tr');
         for (var i = 0; i < test.cells.length; i++) {
           th_id = String(test.cells[i].id)
-          console.log(th_id)
           th_id = document.getElementById(th_id).id
           document.getElementById(th_id).addEventListener('click', function (e) {
             sortTable(parseInt(e.toElement.cellIndex));

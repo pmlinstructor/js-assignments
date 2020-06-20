@@ -1,0 +1,83 @@
+<html>
+
+<body>
+    <form>
+        <input type="text" id="task">
+        <button onclick="addTask(event)">Add Task</button>
+    </form>
+
+    <ul id="tasklist"></ul>
+    <script>
+
+        var at = document.getElementsByTagName("a");
+
+        for (var i = 0; i <= at.length - 1; i++) {
+            at[i].onclick = function (e) { e.preventDefault() };
+        }
+
+        var pt = document.querySelectorAll("p");
+
+        pt.forEach(function (t) {
+            t.addEventListener("click", function (e) {
+                t.style.backgroundColor = "lightpink";
+            })
+        })
+
+        // Adds Task Item to List
+        var i = 0;
+        function addTask(e) {
+            // Prevents default behaviour or Styles
+            e.preventDefault();
+
+            // Creates new List Item
+            var spanElement = document.createElement('span');
+
+            var newElement = document.createElement("li");
+
+            var deleteElement = document.createElement('button');
+            deleteElement.innerText = "Delete";
+            var doneElement = document.createElement('button');
+            doneElement.innerText = "Done"
+            spanElement.appendChild(newElement);
+            spanElement.appendChild(deleteElement);
+            spanElement.appendChild(doneElement);
+            spanElement.className = "item" + String(i);
+
+            // Gets the item entered in the text field
+            var x = document.getElementById("task").value;
+
+            // Assignment text value i.e., Todo item to new element that helps in creating Click Event
+            newElement.innerHTML = x;
+
+            // Click Event that Strikes out the ToDo Item
+            doneElement.onclick = function (e) {
+
+                var class_name = String(e.srcElement.parentElement.className)
+
+                var li_item = document.getElementsByClassName(class_name)[0].getElementsByTagName('li');
+
+                li_item[0].style.textDecoration = 'line-through';
+
+            }
+
+            deleteElement.onclick = function (e) {
+
+                var class_name = String(e.srcElement.parentElement.className)
+
+                var element = document.getElementsByClassName(class_name)[0].getElementsByTagName('li')[0]
+                element.parentNode.remove(element);
+
+            }
+
+            // Add Item to Unordered List
+            var tasklist = document.getElementById("tasklist");
+
+            // Finally append the Item to Web Interface
+            tasklist.appendChild(spanElement);
+            i++;
+        }
+
+    </script>
+</body>
+
+</html>
